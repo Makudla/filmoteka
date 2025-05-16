@@ -1,13 +1,12 @@
 package com.example.filmoteka.ui.list
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.LocalMovies
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -56,7 +55,7 @@ fun MovieListScreen(
                     ) {
                         // Dodajemy ikonę filmu jako logo
                         Icon(
-                            imageVector = Icons.Default.LocalMovies,
+                            imageVector = Icons.Default.ThumbUp,
                             contentDescription = "Logo Filmoteki",
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -183,8 +182,8 @@ fun MovieListScreen(
                             }
                         }
                         
-                        // Zamieniam Divider na HorizontalDivider
-                        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                        // Zamieniam Divider na Divider z orientacją poziomą
+                        Divider(modifier = Modifier.padding(vertical = 8.dp))
                         
                         Text("Status:", style = MaterialTheme.typography.titleMedium)
                         

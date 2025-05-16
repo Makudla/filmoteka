@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt") // Dodaję kapt do przetwarzania adnotacji Room
+    id("org.jetbrains.kotlin.plugin.compose") // Dodanie pluginu Compose Compiler
 }
 
 android {
@@ -37,6 +37,9 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.8" // lub inna wersja zgodna z twoim Kotlinem
     }
 }
 
