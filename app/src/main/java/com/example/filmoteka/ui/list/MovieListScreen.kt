@@ -1,17 +1,24 @@
 package com.example.filmoteka.ui.list
 
+import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.filmoteka.R
 import com.example.filmoteka.data.model.Movie
 import com.example.filmoteka.data.model.MovieCategory
 import kotlinx.coroutines.flow.Flow
@@ -29,15 +36,19 @@ fun MovieListScreen(
     onMovieLongClick: (Movie) -> Unit
 ) {
     val movieList by movies.collectAsState(initial = emptyList())
+    val context = LocalContext.current
     
     // Stan dla filtrów
     var selectedCategory by remember { mutableStateOf<MovieCategory?>(null) }
     var filterByWatched by remember { mutableStateOf<Boolean?>(null) }
     var showFilterDialog by remember { mutableStateOf(false) }
     
-    // Stan dla dialogu usuwania
+    // Stan dla usuwania
     var showDeleteDialog by remember { mutableStateOf(false) }
     var movieToDelete by remember { mutableStateOf<Movie?>(null) }
+    
+    // Wczytanie logo z assets
+    val logoBitmap = remember { loadBitmapFromAssets(context, "logo_2.jpg") }
     
     // Filtrowanie filmów
     val filteredMovies = movieList.filter { movie ->
@@ -53,20 +64,22 @@ fun MovieListScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        // Dodajemy ikonę filmu jako logo
-                        Icon(
-                            imageVector = Icons.Default.ThumbUp,
-                            contentDescription = "Logo Filmoteki",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Text("Filmoteka")
+                        // Używamy obrazu z assets
+                        logoBitmap?.let {
+                            Image(
+                                bitmap = it,
+                                contentDescription = stringResource(R.string.app_name),
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                        Text(stringResource(R.string.app_name))
                     }
                 }
             )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddMovie) {
-                Icon(Icons.Default.Add, contentDescription = "Dodaj film")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_movie))
             }
         }
     ) { padding ->
@@ -79,18 +92,18 @@ fun MovieListScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Filtry:",
+                    text = stringResource(R.string.filters),
                     style = MaterialTheme.typography.bodySmall
                 )
                 
-                // Przycisk filtrowania przeniesiony tutaj
+                // Przycisk filtrowania
                 IconButton(
                     onClick = { showFilterDialog = true },
                     modifier = Modifier.size(24.dp)
                 ) {
                     Icon(
                         Icons.Filled.KeyboardArrowDown, 
-                        contentDescription = "Filtruj",
+                        contentDescription = stringResource(R.string.filter_movies),
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -99,12 +112,12 @@ fun MovieListScreen(
                 Text(
                     text = when {
                         selectedCategory != null && filterByWatched != null -> 
-                            "${selectedCategory?.name}, ${if (filterByWatched == true) "Obejrzane" else "Nieobejrzane"}"
+                            "${selectedCategory?.name}, ${if (filterByWatched == true) stringResource(R.string.filter_watched) else stringResource(R.string.filter_unwatched)}"
                         selectedCategory != null -> 
                             selectedCategory?.name ?: ""
                         filterByWatched != null -> 
-                            if (filterByWatched == true) "Obejrzane" else "Nieobejrzane"
-                        else -> "Brak"
+                            if (filterByWatched == true) stringResource(R.string.filter_watched) else stringResource(R.string.filter_unwatched)
+                        else -> stringResource(R.string.filter_all)
                     },
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -116,14 +129,14 @@ fun MovieListScreen(
                         selectedCategory = null
                         filterByWatched = null
                     }) {
-                        Text("Wyczyść")
+                        Text(stringResource(R.string.clear))
                     }
                 }
             }
 
             // Podsumowanie - liczba pozycji
             Text(
-                text = "Pozycji: ${filteredMovies.size}",
+                text = stringResource(R.string.items_count, filteredMovies.size),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(16.dp)
             )
@@ -136,7 +149,7 @@ fun MovieListScreen(
                         movie = movie,
                         onClick = { onMovieClick(movie) },
                         onLongClick = { 
-                            // Pokaż dialog usuwania po długim przytrzymaniu
+                            // dialog usuwania po długim przytrzymaniu
                             movieToDelete = movie
                             showDeleteDialog = true
                         }
@@ -149,10 +162,10 @@ fun MovieListScreen(
         if (showFilterDialog) {
             AlertDialog(
                 onDismissRequest = { showFilterDialog = false },
-                title = { Text("Filtruj filmy") },
+                title = { Text(stringResource(R.string.filter_movies)) },
                 text = {
                     Column {
-                        Text("Kategoria:", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.filter_category), style = MaterialTheme.typography.titleMedium)
                         
                         Row(
                             modifier = Modifier
@@ -164,7 +177,7 @@ fun MovieListScreen(
                                 selected = selectedCategory == null,
                                 onClick = { selectedCategory = null }
                             )
-                            Text("Wszystkie")
+                            Text(stringResource(R.string.filter_all))
                         }
                         
                         MovieCategory.values().forEach { category ->
@@ -181,11 +194,14 @@ fun MovieListScreen(
                                 Text(category.name)
                             }
                         }
+
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            thickness = 1.dp,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+                        )
                         
-                        // Zamieniam Divider na Divider z orientacją poziomą
-                        Divider(modifier = Modifier.padding(vertical = 8.dp))
-                        
-                        Text("Status:", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.filter_status), style = MaterialTheme.typography.titleMedium)
                         
                         Row(
                             modifier = Modifier
@@ -197,7 +213,7 @@ fun MovieListScreen(
                                 selected = filterByWatched == null,
                                 onClick = { filterByWatched = null }
                             )
-                            Text("Wszystkie")
+                            Text(stringResource(R.string.filter_all))
                         }
                         
                         Row(
@@ -210,7 +226,7 @@ fun MovieListScreen(
                                 selected = filterByWatched == true,
                                 onClick = { filterByWatched = true }
                             )
-                            Text("Obejrzane")
+                            Text(stringResource(R.string.filter_watched))
                         }
                         
                         Row(
@@ -223,13 +239,13 @@ fun MovieListScreen(
                                 selected = filterByWatched == false,
                                 onClick = { filterByWatched = false }
                             )
-                            Text("Nieobejrzane")
+                            Text(stringResource(R.string.filter_unwatched))
                         }
                     }
                 },
                 confirmButton = {
                     TextButton(onClick = { showFilterDialog = false }) {
-                        Text("Zastosuj")
+                        Text(stringResource(R.string.filter_apply))
                     }
                 },
                 dismissButton = {
@@ -238,7 +254,7 @@ fun MovieListScreen(
                         filterByWatched = null
                         showFilterDialog = false
                     }) {
-                        Text("Resetuj")
+                        Text(stringResource(R.string.filter_reset))
                     }
                 }
             )
@@ -251,9 +267,9 @@ fun MovieListScreen(
                     showDeleteDialog = false
                     movieToDelete = null
                 },
-                title = { Text("Usunąć film?") },
+                title = { Text(stringResource(R.string.delete_movie_title)) },
                 text = { 
-                    Text("Czy na pewno chcesz usunąć film \"${movieToDelete?.title}\"?\nTej operacji nie można cofnąć.")
+                    Text(stringResource(R.string.delete_movie_message, movieToDelete?.title ?: ""))
                 },
                 confirmButton = {
                     Button(
@@ -263,7 +279,7 @@ fun MovieListScreen(
                             movieToDelete = null
                         }
                     ) {
-                        Text("Usuń")
+                        Text(stringResource(R.string.delete))
                     }
                 },
                 dismissButton = {
@@ -273,10 +289,21 @@ fun MovieListScreen(
                             movieToDelete = null
                         }
                     ) {
-                        Text("Anuluj")
+                        Text(stringResource(R.string.cancel))
                     }
                 }
             )
         }
+    }
+}
+
+// Funkcja pomocnicza do wczytania obrazu z assets
+private fun loadBitmapFromAssets(context: Context, path: String): ImageBitmap? {
+    return try {
+        val inputStream = context.assets.open(path)
+        android.graphics.BitmapFactory.decodeStream(inputStream)?.asImageBitmap()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
     }
 }

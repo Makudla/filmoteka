@@ -1,3 +1,52 @@
 <resources>
     <string name="app_name">Filmoteka</string>
+    
+    <!-- Ogólne -->
+    <string name="back">Wróć</string>
+    <string name="save">Zapisz</string>
+    <string name="cancel">Anuluj</string>
+    <string name="delete">Usuń</string>
+    
+    <!-- MovieListScreen -->
+    <string name="filters">Filtry:</string>
+    <string name="filter_all">Wszystkie</string>
+    <string name="filter_watched">Obejrzane</string>
+    <string name="filter_unwatched">Nieobejrzane</string>
+    <string name="filter_apply">Zastosuj</string>
+    <string name="filter_reset">Resetuj</string>
+    <string name="filter_movies">Filtruj filmy</string>
+    <string name="filter_category">Kategoria:</string>
+    <string name="filter_status">Status:</string>
+    <string name="clear">Wyczyść</string>
+    <string name="items_count">Pozycji: %1$d</string>
+    <string name="add_movie">Dodaj film</string>
+    <string name="delete_movie_title">Usunąć film?</string>
+    <string name="delete_movie_message">Czy na pewno chcesz usunąć film \"%1$s\"?\nTej operacji nie można cofnąć.</string>
+    
+    <!-- MovieDetailScreen -->
+    <string name="movie_details">Szczegóły filmu</string>
+    <string name="release_date">Premiera: %1$s</string>
+    <string name="category">Kategoria: %1$s</string>
+    <string name="status">Status: %1$s</string>
+    <string name="rating">Ocena: </string>
+    <string name="rating_value">%1$d/5</string>
+    <string name="status_watched">Obejrzany</string>
+    <string name="status_unwatched">Nieobejrzany</string>
+    
+    <!-- AddEditMovieScreen -->
+    <string name="add_movie_title">Dodaj film</string>
+    <string name="edit_movie_title">Edytuj film</string>
+    <string name="movie_title">Tytuł filmu</string>
+    <string name="movie_release_date">Data premiery: %1$s</string>
+    <string name="pick_date">Wybierz datę</string>
+    <string name="movie_poster">Plakat filmu</string>
+    <string name="select_poster">Kliknij, aby wybrać plakat</string>
+    <string name="watched">Obejrzany</string>
+    <string name="movie_rating">Ocena: %1$d/5</string>
+    
+    <!-- Walidacja -->
+    <string name="error_empty_title">Tytuł nie może być pusty</string>
+    <string name="error_future_date">Data premiery nie może być późniejsza niż 2 lata od dziś</string>
+    <string name="error_empty_rating">Film obejrzany musi mieć ocenę</string>
+    <string name="error_no_category">Kategoria musi być wybrana</string>
 </resources>
