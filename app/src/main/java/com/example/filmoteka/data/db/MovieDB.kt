@@ -19,6 +19,9 @@ abstract class MovieDB : RoomDatabase() {
     companion object {
         @Volatile private var INSTANCE: MovieDB? = null
 
+        /**
+         * Pobiera lub tworzy instancję bazy danych.
+         * */
         fun getDatabase(context: Context): MovieDB {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(

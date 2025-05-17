@@ -25,20 +25,19 @@ class DatabaseInitializer(private val context: Context) : RoomDatabase.Callback(
     
     override fun onOpen(db: SupportSQLiteDatabase) {
         super.onOpen(db)
-        // Przy każdym otwarciu bazy danych, czyścimy ją i dodajemy przykładowe dane
+        // Przy każdym otwarciu bazy danych, czyszczenie i dodanie nowych danych
         CoroutineScope(Dispatchers.IO).launch {
             val movieDao = MovieDB.getDatabase(context).movieDao()
             
-            // Najpierw sprawdź, czy baza danych jest pusta
+            // Sprawdzenie czy baza danych jest pusta
             val count = movieDao.getMovieCount()
             
-            // Czyścimy bazę i dodajemy nowe dane tylko jeśli jest pusta
+            // Czyszczenie bazy i dodanie nowych danych tylko jeśli jest pusta
             // lub jeśli to pierwsze uruchomienie aplikacji po instalacji
             if (count == 0) {
                 populateDatabase(context)
             } else {
-                // Możemy opcjonalnie wyczyścić i załadować ponownie,
-                // jeśli chcemy by dane były resetowane przy każdym uruchomieniu
+                // Czyszczenie i ponowne ładowanie przy każdym uruchomieniu
                 movieDao.clearAll()
                 populateDatabase(context)
             }
@@ -121,7 +120,7 @@ class DatabaseInitializer(private val context: Context) : RoomDatabase.Callback(
             )
         )
         
-        // Zapisz wszystkie filmy do bazy danych
+        // Zapis wszystkich filmów do bazy danych
         for (movie in sampleMovies) {
             movieDao.insert(movie)
         }
