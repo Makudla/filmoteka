@@ -31,132 +31,138 @@ import java.util.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieDetailScreen(
-    movie: Movie,
-    onBack: () -> Unit
+    movie: Movie,             // Obiekt filmu przekazany do ekranu
+    onBack: () -> Unit        // Callback do obsługi powrotu
 ) {
-    Scaffold(
+    Scaffold(                // Komponent układu z top barem
         topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.movie_details)) },
+            TopAppBar(       // Pasek u góry ekranu
+                title = {
+                    Text(stringResource(R.string.movie_details)) // Tytuł paska: "Szczegóły filmu"
+                },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
+                    IconButton(onClick = onBack) {               // Przycisk powrotu
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack, // Ikona strzałki powrotu
+                            contentDescription = stringResource(R.string.back) // Opis dla dostępności
+                        )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(      // Kolory paska
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         }
-    ) { padding ->
+    ) { padding ->            // Główna zawartość ekranu z uwzględnieniem paddingu
         Column(
             modifier = Modifier
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(padding)                      // Padding od Scaffolda
+                .verticalScroll(rememberScrollState()) // Umożliwia przewijanie
+                .fillMaxWidth(),                       // Wypełnia całą szerokość
+            horizontalAlignment = Alignment.CenterHorizontally // Wyśrodkowanie w poziomie
         ) {
-            // Plakat filmu - o stałej wysokości 250dp, wyśrodkowany
+            // Sekcja z plakatem filmu
             Box(
                 modifier = Modifier
-                    .padding(top = 16.dp),
-                contentAlignment = Alignment.Center
+                    .padding(top = 16.dp),             // Górny margines
+                contentAlignment = Alignment.Center    // Wyśrodkowanie zawartości w Boxie
             ) {
-                // Tło (w przypadku gdy nie ma obrazu)
-                Box(
+                Box(                                   // Tło plakatu (np. jeśli brak obrazu)
                     modifier = Modifier
-                        .height(250.dp)
-                        .aspectRatio(2f / 3f) // Typowe proporcje plakatu filmowego
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.7f))
+                        .height(250.dp)                // Wysokość plakatu
+                        .aspectRatio(2f / 3f)          // Typowe proporcje plakatu (2:3)
+                        .clip(RoundedCornerShape(12.dp)) // Zaokrąglone rogi
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)) // Kolor tła
                 )
 
-                // Obraz plakatu
-                movie.imageUri?.let { uri ->
+                movie.imageUri?.let { uri ->           // Jeśli istnieje URI do obrazka
                     Image(
-                        painter = rememberAsyncImagePainter(uri),
-                        contentDescription = stringResource(R.string.movie_poster),
+                        painter = rememberAsyncImagePainter(uri), // Ładowanie obrazu asynchronicznie
+                        contentDescription = stringResource(R.string.movie_poster), // Opis dla dostępności
                         modifier = Modifier
                             .height(250.dp)
-                            .clip(RoundedCornerShape(12.dp)),
-                        contentScale = ContentScale.FillHeight
+                            .clip(RoundedCornerShape(12.dp)), // Zaokrąglone rogi
+                        contentScale = ContentScale.FillHeight // Dopasowanie obrazu do wysokości
                     )
                 }
             }
 
-            // Tytuł filmu pod plakatem
+            // Tytuł filmu
             Text(
-                text = movie.title,
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 16.dp)
+                text = movie.title,                     // Tytuł z obiektu Movie
+                style = MaterialTheme.typography.headlineSmall, // Styl typografii
+                color = MaterialTheme.colorScheme.primary,       // Kolor tekstu
+                fontWeight = FontWeight.Bold,                   // Pogrubienie
+                modifier = Modifier.padding(vertical = 16.dp)   // Margines pionowy
             )
 
-            // Informacje o filmie w karcie
+            // Karta z informacjami o filmie
             Card(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                    .fillMaxWidth()                     // Wypełnia całą szerokość
+                    .padding(16.dp),                    // Margines zewnętrzny
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), // Cień karty
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
+                    containerColor = MaterialTheme.colorScheme.surface // Kolor tła karty
                 ),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp)       // Zaokrąglone rogi
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth()
+                        .padding(16.dp)                 // Margines wewnętrzny
+                        .fillMaxWidth()                 // Wypełnia całą szerokość
                 ) {
-                    val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                    val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()) // Format daty
+
                     Text(
-                        text = stringResource(R.string.release_date, dateFormat.format(Date(movie.releaseDate))),
+                        text = stringResource(R.string.release_date, dateFormat.format(Date(movie.releaseDate))), // Data premiery
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp)) // Odstęp
 
                     Text(
-                        text = stringResource(R.string.category, movie.category.name),
+                        text = stringResource(R.string.category, movie.category.name), // Kategoria filmu
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp)) // Odstęp
 
                     Text(
                         text = stringResource(
-                            R.string.status, 
-                            stringResource(if (movie.watched) R.string.status_watched else R.string.status_unwatched)
+                            R.string.status,                         // Status: obejrzany / nieobejrzany
+                            stringResource(
+                                if (movie.watched) R.string.status_watched else R.string.status_unwatched
+                            )
                         ),
                         style = MaterialTheme.typography.bodyLarge,
                         color = if (movie.watched)
-                            MaterialTheme.colorScheme.secondary
+                            MaterialTheme.colorScheme.secondary     // Kolor jeśli obejrzany
                         else
-                            MaterialTheme.colorScheme.tertiary
+                            MaterialTheme.colorScheme.tertiary      // Kolor jeśli nieobejrzany
                     )
 
-                    movie.rating?.let {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        HorizontalDivider()
-                        Spacer(modifier = Modifier.height(16.dp))
+                    movie.rating?.let {                            // Jeśli jest ocena filmu
+                        Spacer(modifier = Modifier.height(16.dp)) // Odstęp
+                        HorizontalDivider()                       // Linia oddzielająca
+                        Spacer(modifier = Modifier.height(16.dp)) // Odstęp
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = stringResource(R.string.rating),
+                                text = stringResource(R.string.rating), // Etykieta: "Ocena"
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
 
                             Text(
-                                text = stringResource(R.string.rating_value, it),
+                                text = stringResource(R.string.rating_value, it), // Wartość oceny
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.secondary,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold                   // Pogrubienie oceny
                             )
                         }
                     }

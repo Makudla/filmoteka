@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Inicjalizacja ViewModelu bez użycia Factory
+        // Inicjalizacja ViewModelu
         movieViewModel = ViewModelProvider(this)[MovieViewModel::class.java]
         
         enableEdgeToEdge()
